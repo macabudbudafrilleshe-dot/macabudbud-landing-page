@@ -211,3 +211,50 @@ input {
   outline: none;
   text-align: center;
 }
+
+/* ========== VALIDATION STYLES ========== */
+input.input-error {
+  border-color: #ff4d4d;
+  box-shadow:
+    0 0 8px rgba(255, 77, 77, 0.6),
+    inset 0 0 6px rgba(255, 77, 77, 0.3);
+}
+
+input.input-success {
+  border-color: #00ffff;
+  box-shadow:
+    0 0 8px rgba(0, 255, 255, 0.6),
+    inset 0 0 6px rgba(0, 255, 255, 0.3);
+}
+
+.error-msg {
+  display: block;
+  color: #ff4d4d;
+  font-size: 12px;
+  letter-spacing: 0.5px;
+  text-shadow: 0 0 6px rgba(255, 77, 77, 0.6);
+  margin-top: 6px;
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.success-msg {
+  display: block;
+  color: #00ffff;
+  font-size: 13px;
+  letter-spacing: 0.5px;
+  text-shadow: 0 0 8px rgba(0, 255, 255, 0.8);
+  margin-bottom: 12px;
+  text-align: center;
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.input-group input {
+  width: 260px;
+}

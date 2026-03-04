@@ -13,26 +13,39 @@
 
       <div class="content">
         <form id="settingsForm">
-          <input
-            type="email"
-            id="settingsEmail"
-            placeholder="Change Email"
-          /><br /><br />
-          <input
-            type="text"
-            id="settingsAddress"
-            placeholder="Change Address"
-          /><br /><br />
-          <input
-            type="password"
-            id="settingsPassword"
-            placeholder="Change Password"
-          /><br /><br />
+          <div class="input-group">
+            <input type="email" id="settingsEmail" placeholder="Change Email" />
+          </div>
+          <div class="input-group">
+            <input
+              type="text"
+              id="settingsAddress"
+              placeholder="Change Address"
+            />
+          </div>
+          <div class="input-group">
+            <input
+              type="password"
+              id="settingsPassword"
+              placeholder="Change Password"
+            />
+          </div>
 
           <label style="color: #7ffcff">
             <input type="checkbox" /> Enable Dark Theme
           </label>
           <br /><br />
+
+          <p
+            id="settingsSuccess"
+            style="
+              display: none;
+              color: #00ffff;
+              text-shadow: 0 0 8px rgba(0, 255, 255, 0.8);
+            "
+          >
+            ✔ Settings saved successfully!
+          </p>
 
           <button type="submit">Save Settings</button>
         </form>
