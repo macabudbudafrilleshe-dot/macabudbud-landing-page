@@ -12,19 +12,23 @@
       <h1>Login</h1>
 
       <div class="content">
-        <input type="email" placeholder="Email" /><br /><br />
-        <input type="password" placeholder="Password" /><br /><br />
+        <form id="loginForm">
+          <input type="email" id="loginEmail" placeholder="Email" /><br /><br />
+          <input
+            type="password"
+            id="loginPassword"
+            placeholder="Password"
+          /><br /><br />
+          <button type="submit">Login</button>
+        </form>
 
-        <a href="profile.html">
-  <button>Login</button>
-</a>
-      
-
-
-      <p>
-        Don’t have an account?
-        <a href="signup.html">Sign up</a>
-      </p>
+        <p>
+          Don't have an account?
+          <a href="signup.html">Sign up</a>
+        </p>
+      </div>
     </section>
+
+    <script src="script.js"></script>
   </body>
 </html>

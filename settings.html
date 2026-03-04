@@ -6,24 +6,39 @@
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <!-- Back Navigation -->
     <a href="profile.html" class="login-box">Back to Profile</a>
 
     <section class="hero">
       <h1>Settings</h1>
 
       <div class="content">
-        <input type="email" placeholder="Change Email" /><br /><br />
-        <input type="text" placeholder="Change Address" /><br /><br />
-        <input type="password" placeholder="Change Password" /><br /><br />
+        <form id="settingsForm">
+          <input
+            type="email"
+            id="settingsEmail"
+            placeholder="Change Email"
+          /><br /><br />
+          <input
+            type="text"
+            id="settingsAddress"
+            placeholder="Change Address"
+          /><br /><br />
+          <input
+            type="password"
+            id="settingsPassword"
+            placeholder="Change Password"
+          /><br /><br />
 
-        <label style="color: #7ffcff">
-          <input type="checkbox" /> Enable Dark Theme
-        </label>
-        <br /><br />
+          <label style="color: #7ffcff">
+            <input type="checkbox" /> Enable Dark Theme
+          </label>
+          <br /><br />
 
-        <button>Save Settings</button>
+          <button type="submit">Save Settings</button>
+        </form>
       </div>
     </section>
+
+    <script src="script.js"></script>
   </body>
 </html>

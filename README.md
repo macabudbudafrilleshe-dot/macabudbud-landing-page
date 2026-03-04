@@ -101,4 +101,51 @@ and backend integration.
 
 AI tools were used to assist with layout planning, UI structure guidance,
 and code refinement. All code was reviewed, understood, and manually
+integrated by the developer to meet the project requirements.git add README.md
+
+---
+
+# ACTIVITY 4
+
+# MARCH 04, 2026
+
+## Client-Side Validation Rule
+
+### Description
+
+This activity extends the NEONODE project by implementing client-side form validation
+using JavaScript. Validation logic was added to the Login, Sign Up, and Settings pages
+to prevent invalid form submissions and improve user experience.
+
+### Technologies Used
+
+- HTML5
+- CSS3
+- JavaScript (Vanilla)
+- GitHub Pages (for deployment)
+
+### Features
+
+- Login form validation:
+  - Email field must not be empty and must contain "@" and "."
+  - Password must not be empty and must be at least 6 characters
+  - On success, redirects automatically to Profile page
+- Sign Up form validation:
+  - Full name must not be empty
+  - Email must be in valid format
+  - Password must be at least 6 characters
+  - Confirm Password must match Password
+  - On success, redirects to Login page
+- Settings form validation:
+  - Only validates fields that the user fills in
+  - Email format is checked if provided
+  - Password length is checked if provided
+  - On success, shows a confirmation message
+- All validation logic is contained in `script.js`
+- GitHub Pages site remains fully functional
+
+### AI Assistance Disclosure
+
+AI tools were used to assist with JavaScript validation logic, code structure,
+and debugging guidance. All code was reviewed, understood, and manually
 integrated by the developer to meet the project requirements.

@@ -12,17 +12,37 @@
       <h1>Sign Up</h1>
 
       <div class="content">
-        <input type="text" placeholder="Full Name" /><br /><br />
-        <input type="email" placeholder="Email" /><br /><br />
-        <input type="password" placeholder="Password" /><br /><br />
-        <input type="password" placeholder="Confirm Password" /><br /><br />
-        <button>Create Account</button>
-      </div>
+        <form id="signupForm">
+          <input
+            type="text"
+            id="signupName"
+            placeholder="Full Name"
+          /><br /><br />
+          <input
+            type="email"
+            id="signupEmail"
+            placeholder="Email"
+          /><br /><br />
+          <input
+            type="password"
+            id="signupPassword"
+            placeholder="Password"
+          /><br /><br />
+          <input
+            type="password"
+            id="signupConfirm"
+            placeholder="Confirm Password"
+          /><br /><br />
+          <button type="submit">Create Account</button>
+        </form>
 
-      <p>
-        Already have an account?
-        <a href="login.html">Login</a>
-      </p>
+        <p>
+          Already have an account?
+          <a href="login.html">Login</a>
+        </p>
+      </div>
     </section>
+
+    <script src="script.js"></script>
   </body>
 </html>
