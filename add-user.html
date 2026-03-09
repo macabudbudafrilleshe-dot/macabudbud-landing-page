@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Add User</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <a href="manage-users.html" class="login-box">Back</a>
+
+    <section class="hero">
+      <h1>Add User</h1>
+      <p class="hero-subtext">Register a new user into the system</p>
+
+      <div class="content">
+        <form id="addUserForm">
+          <div class="input-group">
+            <input type="text" id="newName" placeholder="Full Name" />
+          </div>
+          <div class="input-group">
+            <input type="email" id="newEmail" placeholder="Email" />
+          </div>
+          <div class="input-group">
+            <input
+              type="text"
+              id="newRole"
+              placeholder="Role (e.g. user, admin)"
+            />
+          </div>
+
+          <p
+            id="addUserSuccess"
+            style="
+              display: none;
+              color: #00ffff;
+              text-shadow: 0 0 8px rgba(0, 255, 255, 0.8);
+            "
+          >
+            ✔ User added successfully!
+          </p>
+
+          <button type="submit">Add User</button>
+        </form>
+      </div>
+    </section>
+
+    <script src="script.js"></script>
+  </body>
+</html>

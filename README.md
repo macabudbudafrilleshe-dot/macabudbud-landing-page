@@ -149,3 +149,14 @@ to prevent invalid form submissions and improve user experience.
 AI tools were used to assist with JavaScript validation logic, code structure,
 and debugging guidance. All code was reviewed, understood, and manually
 integrated by the developer to meet the project requirements.
+
+---
+
+## Create Admin Pages
+
+Implemented a simple admin interface including:
+
+- Admin Dashboard (`admin.html`) with navigation menu
+- Manage Users page (`manage-users.html`) with a dynamic table and delete functionality
+- Add User form (`add-user.html`) with input validation
+- Admin access is restricted via login role check using localStorage
