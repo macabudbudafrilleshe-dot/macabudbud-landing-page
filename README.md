@@ -160,3 +160,18 @@ Implemented a simple admin interface including:
 - Manage Users page (`manage-users.html`) with a dynamic table and delete functionality
 - Add User form (`add-user.html`) with input validation
 - Admin access is restricted via login role check using localStorage
+
+---
+
+## API Integration — Health Tips Page
+
+Integrated the Advice Slip API into NEONODE to display random health tips.
+
+- Page: `health-tips.html`
+- API Used: [Advice Slip API](https://api.adviceslip.com)
+- Features:
+  - Fetches a random health tip on page load
+  - User can click "Get Health Tip" to fetch a new one
+  - Shows tip ID and session fetch counter
+  - Handles errors (no internet, failed request) gracefully
+- How to use: Navigate to the Health Tips page and click the button

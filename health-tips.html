@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Health Tips - NEONODE</title>
+    <link rel="stylesheet" href="style.css" />
+    <style>
+      /* ===== HEALTH TIPS PAGE SPECIFIC STYLES ===== */
+      .tip-card {
+        background: rgba(0, 0, 0, 0.6);
+        border: 1px solid #00ffff;
+        border-radius: 12px;
+        padding: 30px 40px;
+        max-width: 600px;
+        margin: 20px auto;
+        box-shadow:
+          0 0 20px rgba(0, 255, 255, 0.3),
+          inset 0 0 20px rgba(0, 255, 255, 0.05);
+        min-height: 100px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .tip-text {
+        font-size: 1.3rem;
+        line-height: 1.7;
+        color: #eaffff;
+        text-shadow: 0 0 8px rgba(0, 255, 255, 0.4);
+        text-align: center;
+        letter-spacing: 0.5px;
+      }
+
+      .tip-id {
+        font-size: 0.8rem;
+        color: #00ffff;
+        text-shadow: 0 0 6px #00ffff;
+        margin-top: 16px;
+        letter-spacing: 1px;
+        opacity: 0.7;
+      }
+
+      .loading-text {
+        color: #7ffcff;
+        font-size: 1rem;
+        text-shadow: 0 0 6px #00ffff;
+        animation: flicker 1.2s infinite alternate;
+      }
+
+      @keyframes flicker {
+        0% {
+          opacity: 1;
+        }
+        100% {
+          opacity: 0.4;
+        }
+      }
+
+      .error-text {
+        color: #ff4d4d;
+        font-size: 1rem;
+        text-shadow: 0 0 6px rgba(255, 77, 77, 0.6);
+      }
+
+      .tip-counter {
+        font-size: 0.85rem;
+        color: #7ffcff;
+        margin-top: 8px;
+        opacity: 0.8;
+      }
+
+      .btn-refresh {
+        margin-top: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <a href="index.html" class="login-box">Home</a>
+
+    <section class="hero">
+      <h1>Health Tips</h1>
+      <p class="hero-subtext">Daily advice to keep you informed and healthy</p>
+
+      <div class="content">
+        <h2>Today's Health Advice</h2>
+        <p>
+          Click the button below to get a random health tip powered by a live
+          API.
+        </p>
+
+        <!-- Tip Display Card -->
+        <div class="tip-card" id="tipCard">
+          <p class="tip-text" id="tipText">
+            Press the button to get your first health tip.
+          </p>
+        </div>
+
+        <p class="tip-id" id="tipId"></p>
+        <p class="tip-counter" id="tipCounter"></p>
+
+        <!-- Fetch Button -->
+        <div class="btn-refresh">
+          <button id="fetchBtn" onclick="fetchTip()">Get Health Tip</button>
+        </div>
+      </div>
+
+      <div
+        class="content"
+        style="
+          margin-top: 30px;
+          max-width: 600px;
+          margin-left: auto;
+          margin-right: auto;
+        "
+      >
+        <h2>How It Works</h2>
+        <p>
+          This page connects to the
+          <strong style="color: #00ffff">Advice Slip API</strong>, a free public
+          API that returns random advice slips. Each time you click the button,
+          NEONODE fetches a brand new tip from the API and displays it
+          instantly.
+        </p>
+      </div>
+    </section>
+
+    <footer>
+      <p>NEONODE © 2026 — Powered by Advice Slip API</p>
+    </footer>
+
+    <script>
+      // ========== HEALTH TIPS API ==========
+
+      let tipCount = 0; // tracks how many tips the user has fetched
+
+      async function fetchTip() {
+        const tipText = document.getElementById("tipText");
+        const tipId = document.getElementById("tipId");
+        const tipCounter = document.getElementById("tipCounter");
+        const fetchBtn = document.getElementById("fetchBtn");
+
+        // Show loading state
+        tipText.innerHTML =
+          '<span class="loading-text">⟳ Fetching your health tip...</span>';
+        tipId.textContent = "";
+        fetchBtn.disabled = true;
+        fetchBtn.textContent = "Loading...";
+
+        try {
+          // Fetch from Advice Slip API
+          // cache: "no-store" prevents browser from returning the same cached result
+          const response = await fetch("https://api.adviceslip.com/advice", {
+            cache: "no-store",
+          });
+
+          // Check if the request was successful
+          if (!response.ok) {
+            throw new Error("API request failed. Status: " + response.status);
+          }
+
+          // Parse the JSON response
+          const data = await response.json();
+
+          // Extract the advice text and ID from the response
+          const advice = data.slip.advice;
+          const id = data.slip.id;
+
+          // Update tip count
+          tipCount++;
+
+          // Display the fetched tip
+          tipText.textContent = "💡 " + advice;
+          tipId.textContent = "Tip #" + id + " from Advice Slip API";
+          tipCounter.textContent =
+            "You have fetched " + tipCount + " tip(s) this session.";
+        } catch (error) {
+          // Handle errors gracefully — never leave the page blank
+          if (!navigator.onLine) {
+            tipText.innerHTML =
+              '<span class="error-text">⚠ No internet connection. Please check your network and try again.</span>';
+          } else {
+            tipText.innerHTML =
+              '<span class="error-text">⚠ Could not load a tip right now. Please try again in a moment.</span>';
+          }
+          tipId.textContent = "";
+          console.error("API Error:", error);
+        } finally {
+          // Re-enable the button regardless of success or failure
+          fetchBtn.disabled = false;
+          fetchBtn.textContent = "Get Health Tip";
+        }
+      }
+
+      // Auto-fetch one tip when the page loads so it's not empty
+      window.addEventListener("load", fetchTip);
+    </script>
+  </body>
+</html>
