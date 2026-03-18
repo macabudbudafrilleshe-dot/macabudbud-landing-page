@@ -175,3 +175,16 @@ Integrated the Advice Slip API into NEONODE to display random health tips.
   - Shows tip ID and session fetch counter
   - Handles errors (no internet, failed request) gracefully
 - How to use: Navigate to the Health Tips page and click the button
+
+---
+
+## Add Save Feature (Using localStorage)
+
+Enhanced the Health Tips page with a save feature using localStorage.
+
+- Save button stores the current tip (ID + text) in localStorage
+- Duplicate tips are prevented using tip ID checking
+- Saved Tips page (`saved-tips.html`) displays all saved tips
+- Data persists after page refresh
+- Delete button removes individual saved tips
+- Toast notifications confirm save and delete actions
