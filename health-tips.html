@@ -6,7 +6,6 @@
     <title>Health Tips - NEONODE</title>
     <link rel="stylesheet" href="style.css" />
     <style>
-      /* ===== HEALTH TIPS PAGE SPECIFIC STYLES ===== */
       .tip-card {
         background: rgba(0, 0, 0, 0.6);
         border: 1px solid #00ffff;
@@ -19,8 +18,10 @@
           inset 0 0 20px rgba(0, 255, 255, 0.05);
         min-height: 100px;
         display: flex;
+        flex-direction: column;
         align-items: center;
         justify-content: center;
+        gap: 16px;
       }
 
       .tip-text {
@@ -36,7 +37,7 @@
         font-size: 0.8rem;
         color: #00ffff;
         text-shadow: 0 0 6px #00ffff;
-        margin-top: 16px;
+        margin-top: 4px;
         letter-spacing: 1px;
         opacity: 0.7;
       }
@@ -66,17 +67,83 @@
       .tip-counter {
         font-size: 0.85rem;
         color: #7ffcff;
-        margin-top: 8px;
+        margin-top: 4px;
         opacity: 0.8;
       }
 
-      .btn-refresh {
+      .btn-row {
+        display: flex;
+        justify-content: center;
+        gap: 14px;
+        flex-wrap: wrap;
         margin-top: 10px;
+      }
+
+      .save-btn {
+        background: linear-gradient(90deg, #00ff99, #00c9ff);
+        color: #000;
+        box-shadow: 0 0 10px rgba(0, 255, 153, 0.6);
+      }
+
+      .save-btn:hover {
+        box-shadow: 0 0 20px rgba(0, 255, 153, 0.9);
+      }
+
+      .save-btn:disabled {
+        background: linear-gradient(90deg, #555, #333);
+        color: #999;
+        box-shadow: none;
+        cursor: not-allowed;
+        transform: none;
+        animation: none;
+      }
+
+      .toast {
+        position: fixed;
+        bottom: 30px;
+        left: 50%;
+        transform: translateX(-50%);
+        padding: 12px 28px;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: bold;
+        letter-spacing: 0.5px;
+        z-index: 9999;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        pointer-events: none;
+      }
+
+      .toast.success {
+        background: rgba(0, 255, 153, 0.15);
+        border: 1px solid #00ff99;
+        color: #00ff99;
+        text-shadow: 0 0 8px rgba(0, 255, 153, 0.8);
+        box-shadow: 0 0 16px rgba(0, 255, 153, 0.4);
+      }
+
+      .toast.duplicate {
+        background: rgba(255, 200, 0, 0.15);
+        border: 1px solid #ffc800;
+        color: #ffc800;
+        text-shadow: 0 0 8px rgba(255, 200, 0, 0.8);
+        box-shadow: 0 0 16px rgba(255, 200, 0, 0.4);
+      }
+
+      .toast.show {
+        opacity: 1;
+      }
+
+      .view-saved-link {
+        margin-top: 16px;
       }
     </style>
   </head>
   <body>
     <a href="index.html" class="login-box">Home</a>
+
+    <!-- Toast notification -->
+    <div class="toast" id="toast"></div>
 
     <section class="hero">
       <h1>Health Tips</h1>
@@ -99,9 +166,21 @@
         <p class="tip-id" id="tipId"></p>
         <p class="tip-counter" id="tipCounter"></p>
 
-        <!-- Fetch Button -->
-        <div class="btn-refresh">
+        <!-- Buttons -->
+        <div class="btn-row">
           <button id="fetchBtn" onclick="fetchTip()">Get Health Tip</button>
+          <button class="save-btn" id="saveBtn" onclick="saveTip()" disabled>
+            Save Tip
+          </button>
+        </div>
+
+        <!-- Link to saved tips -->
+        <div class="view-saved-link">
+          <a href="saved-tips.html"
+            ><button style="font-size: 14px; padding: 10px 24px">
+              View Saved Tips
+            </button></a
+          >
         </div>
       </div>
 
@@ -120,7 +199,7 @@
           <strong style="color: #00ffff">Advice Slip API</strong>, a free public
           API that returns random advice slips. Each time you click the button,
           NEONODE fetches a brand new tip from the API and displays it
-          instantly.
+          instantly. You can also save any tip you like and view them later.
         </p>
       </div>
     </section>
@@ -130,15 +209,17 @@
     </footer>
 
     <script>
-      // ========== HEALTH TIPS API ==========
+      // ========== STATE ==========
+      let tipCount = 0;
+      let currentTip = null; // stores the currently displayed tip object
 
-      let tipCount = 0; // tracks how many tips the user has fetched
-
+      // ========== FETCH TIP ==========
       async function fetchTip() {
         const tipText = document.getElementById("tipText");
         const tipId = document.getElementById("tipId");
         const tipCounter = document.getElementById("tipCounter");
         const fetchBtn = document.getElementById("fetchBtn");
+        const saveBtn = document.getElementById("saveBtn");
 
         // Show loading state
         tipText.innerHTML =
@@ -146,36 +227,46 @@
         tipId.textContent = "";
         fetchBtn.disabled = true;
         fetchBtn.textContent = "Loading...";
+        saveBtn.disabled = true;
+        saveBtn.textContent = "Save Tip";
+        currentTip = null;
 
         try {
           // Fetch from Advice Slip API
-          // cache: "no-store" prevents browser from returning the same cached result
           const response = await fetch("https://api.adviceslip.com/advice", {
             cache: "no-store",
           });
 
-          // Check if the request was successful
           if (!response.ok) {
             throw new Error("API request failed. Status: " + response.status);
           }
 
-          // Parse the JSON response
           const data = await response.json();
-
-          // Extract the advice text and ID from the response
           const advice = data.slip.advice;
           const id = data.slip.id;
 
-          // Update tip count
+          // Store current tip in memory
+          currentTip = { id: id, text: advice };
+
           tipCount++;
 
-          // Display the fetched tip
+          // Display the tip
           tipText.textContent = "💡 " + advice;
           tipId.textContent = "Tip #" + id + " from Advice Slip API";
           tipCounter.textContent =
             "You have fetched " + tipCount + " tip(s) this session.";
+
+          // Check if already saved — update button label accordingly
+          const saved = getSavedTips();
+          const alreadySaved = saved.some((t) => t.id === id);
+          if (alreadySaved) {
+            saveBtn.textContent = "Already Saved";
+            saveBtn.disabled = true;
+          } else {
+            saveBtn.textContent = "Save Tip";
+            saveBtn.disabled = false;
+          }
         } catch (error) {
-          // Handle errors gracefully — never leave the page blank
           if (!navigator.onLine) {
             tipText.innerHTML =
               '<span class="error-text">⚠ No internet connection. Please check your network and try again.</span>';
@@ -186,13 +277,53 @@
           tipId.textContent = "";
           console.error("API Error:", error);
         } finally {
-          // Re-enable the button regardless of success or failure
           fetchBtn.disabled = false;
           fetchBtn.textContent = "Get Health Tip";
         }
       }
 
-      // Auto-fetch one tip when the page loads so it's not empty
+      // ========== GET SAVED TIPS FROM LOCALSTORAGE ==========
+      function getSavedTips() {
+        // getItem returns null if nothing saved yet, so we default to []
+        return JSON.parse(localStorage.getItem("savedTips")) || [];
+      }
+
+      // ========== SAVE TIP ==========
+      function saveTip() {
+        if (!currentTip) return;
+
+        const saved = getSavedTips();
+
+        // Prevent duplicates — check by tip ID
+        const alreadySaved = saved.some((t) => t.id === currentTip.id);
+        if (alreadySaved) {
+          showToast("⚠ This tip is already saved!", "duplicate");
+          return;
+        }
+
+        // Add new tip to the array and save back to localStorage
+        saved.push({ id: currentTip.id, text: currentTip.text });
+        localStorage.setItem("savedTips", JSON.stringify(saved));
+
+        // Update save button state
+        const saveBtn = document.getElementById("saveBtn");
+        saveBtn.textContent = "Already Saved";
+        saveBtn.disabled = true;
+
+        showToast("✔ Tip saved successfully!", "success");
+      }
+
+      // ========== TOAST NOTIFICATION ==========
+      function showToast(message, type) {
+        const toast = document.getElementById("toast");
+        toast.textContent = message;
+        toast.className = "toast " + type + " show";
+        setTimeout(() => {
+          toast.className = "toast " + type;
+        }, 2500);
+      }
+
+      // Auto-fetch on page load
       window.addEventListener("load", fetchTip);
     </script>
   </body>

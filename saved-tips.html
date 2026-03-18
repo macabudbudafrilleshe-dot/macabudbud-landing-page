@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Saved Tips - NEONODE</title>
+    <link rel="stylesheet" href="style.css" />
+    <style>
+      .saved-card {
+        background: rgba(0, 0, 0, 0.6);
+        border: 1px solid #00ffff;
+        border-radius: 12px;
+        padding: 20px 30px;
+        max-width: 600px;
+        margin: 12px auto;
+        box-shadow: 0 0 14px rgba(0, 255, 255, 0.2);
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        text-align: left;
+      }
+
+      .saved-card .saved-text {
+        font-size: 1.1rem;
+        color: #eaffff;
+        text-shadow: 0 0 6px rgba(0, 255, 255, 0.3);
+        line-height: 1.6;
+      }
+
+      .saved-card .saved-meta {
+        font-size: 0.78rem;
+        color: #00ffff;
+        opacity: 0.7;
+        letter-spacing: 1px;
+      }
+
+      .delete-saved-btn {
+        align-self: flex-end;
+        padding: 6px 18px;
+        font-size: 13px;
+        background: linear-gradient(90deg, #ff4d4d, #ff0000);
+        box-shadow: 0 0 8px rgba(255, 77, 77, 0.6);
+        animation: none;
+        border-radius: 20px;
+      }
+
+      .delete-saved-btn:hover {
+        box-shadow: 0 0 16px rgba(255, 77, 77, 0.9);
+        transform: scale(1.05);
+      }
+
+      .empty-state {
+        font-size: 1rem;
+        color: #7ffcff;
+        opacity: 0.7;
+        margin-top: 20px;
+        text-align: center;
+      }
+
+      .btn-row {
+        display: flex;
+        justify-content: center;
+        gap: 14px;
+        flex-wrap: wrap;
+        margin-top: 20px;
+      }
+
+      .toast {
+        position: fixed;
+        bottom: 30px;
+        left: 50%;
+        transform: translateX(-50%);
+        padding: 12px 28px;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: bold;
+        letter-spacing: 0.5px;
+        z-index: 9999;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        pointer-events: none;
+      }
+
+      .toast.deleted {
+        background: rgba(255, 77, 77, 0.15);
+        border: 1px solid #ff4d4d;
+        color: #ff4d4d;
+        text-shadow: 0 0 8px rgba(255, 77, 77, 0.8);
+        box-shadow: 0 0 16px rgba(255, 77, 77, 0.4);
+      }
+
+      .toast.show {
+        opacity: 1;
+      }
+
+      .saved-count {
+        font-size: 0.9rem;
+        color: #7ffcff;
+        opacity: 0.8;
+        margin-bottom: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <a href="health-tips.html" class="login-box">Back</a>
+
+    <!-- Toast notification -->
+    <div class="toast" id="toast"></div>
+
+    <section class="hero">
+      <h1>Saved Tips</h1>
+      <p class="hero-subtext">Your personally saved health advice</p>
+
+      <div class="content">
+        <h2>My Saved Health Tips</h2>
+
+        <p class="saved-count" id="savedCount"></p>
+
+        <!-- Saved tips will be rendered here -->
+        <div id="savedList"></div>
+
+        <div class="btn-row">
+          <a href="health-tips.html"><button>Get More Tips</button></a>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <p>NEONODE © 2026 — Powered by Advice Slip API</p>
+    </footer>
+
+    <script>
+      // ========== GET SAVED TIPS FROM LOCALSTORAGE ==========
+      function getSavedTips() {
+        return JSON.parse(localStorage.getItem("savedTips")) || [];
+      }
+
+      // ========== DELETE A SAVED TIP ==========
+      function deleteTip(id) {
+        let saved = getSavedTips();
+
+        // Remove the tip with the matching ID
+        saved = saved.filter((t) => t.id !== id);
+
+        // Save the updated array back to localStorage
+        localStorage.setItem("savedTips", JSON.stringify(saved));
+
+        showToast("🗑 Tip removed.", "deleted");
+
+        // Re-render the list
+        renderSaved();
+      }
+
+      // ========== RENDER SAVED TIPS ==========
+      function renderSaved() {
+        const saved = getSavedTips();
+        const list = document.getElementById("savedList");
+        const countEl = document.getElementById("savedCount");
+
+        list.innerHTML = "";
+
+        if (saved.length === 0) {
+          // Empty state — never leave page blank
+          list.innerHTML =
+            '<p class="empty-state">💭 No saved tips yet. Go get some health tips and save them!</p>';
+          countEl.textContent = "";
+          return;
+        }
+
+        countEl.textContent = "You have " + saved.length + " saved tip(s).";
+
+        // Loop through saved tips and create a card for each
+        saved.forEach((tip) => {
+          const card = document.createElement("div");
+          card.className = "saved-card";
+          card.innerHTML = `
+            <p class="saved-text">💡 ${tip.text}</p>
+            <p class="saved-meta">Tip #${tip.id}</p>
+            <button class="delete-saved-btn" onclick="deleteTip(${tip.id})">Delete</button>
+          `;
+          list.appendChild(card);
+        });
+      }
+
+      // ========== TOAST NOTIFICATION ==========
+      function showToast(message, type) {
+        const toast = document.getElementById("toast");
+        toast.textContent = message;
+        toast.className = "toast " + type + " show";
+        setTimeout(() => {
+          toast.className = "toast " + type;
+        }, 2500);
+      }
+
+      // Render on page load
+      window.addEventListener("load", renderSaved);
+    </script>
+  </body>
+</html>
