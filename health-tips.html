@@ -3,43 +3,222 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Health Tips - NEONODE</title>
+    <title>Nutrition Checker - NEONODE</title>
     <link rel="stylesheet" href="style.css" />
     <style>
-      .tip-card {
+      .search-row {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin-top: 10px;
+      }
+
+      .search-row input {
+        width: 260px;
+        padding: 12px;
+        border-radius: 6px;
+        border: 1px solid #00ffff;
+        background: rgba(0, 0, 0, 0.6);
+        color: white;
+        outline: none;
+        text-align: center;
+        font-size: 15px;
+      }
+
+      .suggestions {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 14px;
+      }
+
+      .suggestion-chip {
+        padding: 6px 16px;
+        border: 1px solid rgba(0, 255, 255, 0.4);
+        border-radius: 20px;
+        font-size: 13px;
+        color: #7ffcff;
+        cursor: pointer;
+        background: rgba(0, 255, 255, 0.05);
+        transition: all 0.2s ease;
+        animation: none;
+        box-shadow: none;
+      }
+
+      .suggestion-chip:hover {
+        background: rgba(0, 255, 255, 0.15);
+        border-color: #00ffff;
+        color: #eaffff;
+        transform: scale(1.05);
+        box-shadow: 0 0 8px rgba(0, 255, 255, 0.4);
+      }
+
+      .result-card {
         background: rgba(0, 0, 0, 0.6);
         border: 1px solid #00ffff;
         border-radius: 12px;
-        padding: 30px 40px;
-        max-width: 600px;
-        margin: 20px auto;
+        padding: 24px 30px;
+        max-width: 660px;
+        margin: 14px auto;
         box-shadow:
           0 0 20px rgba(0, 255, 255, 0.3),
           inset 0 0 20px rgba(0, 255, 255, 0.05);
-        min-height: 100px;
-        display: flex;
+        display: none;
         flex-direction: column;
+        gap: 14px;
+        text-align: left;
+      }
+
+      .result-card.visible {
+        display: flex;
+      }
+
+      .product-header {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+
+      .product-img {
+        width: 100px;
+        height: 100px;
+        object-fit: contain;
+        border-radius: 10px;
+        border: 1px solid rgba(0, 255, 255, 0.3);
+        background: rgba(255, 255, 255, 0.05);
+      }
+
+      .product-img-placeholder {
+        width: 100px;
+        height: 100px;
+        border-radius: 10px;
+        border: 1px solid rgba(0, 255, 255, 0.3);
+        background: rgba(0, 255, 255, 0.05);
+        display: flex;
         align-items: center;
         justify-content: center;
-        gap: 16px;
+        font-size: 2rem;
       }
 
-      .tip-text {
-        font-size: 1.3rem;
-        line-height: 1.7;
+      .product-title {
+        flex: 1;
+        min-width: 200px;
+      }
+
+      .product-title h3 {
+        color: #00ffff;
+        font-size: 1.2rem;
+        text-shadow: 0 0 10px rgba(0, 255, 255, 0.6);
+        margin: 0 0 6px 0;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+
+      .product-brand {
+        font-size: 0.85rem;
+        color: #7ffcff;
+        opacity: 0.8;
+      }
+
+      .nutri-score {
+        display: inline-block;
+        padding: 4px 14px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: bold;
+        letter-spacing: 1px;
+        margin-top: 6px;
+      }
+
+      .nutri-a {
+        background: rgba(0, 200, 80, 0.2);
+        border: 1px solid #00c850;
+        color: #00c850;
+      }
+      .nutri-b {
+        background: rgba(100, 200, 0, 0.2);
+        border: 1px solid #64c800;
+        color: #64c800;
+      }
+      .nutri-c {
+        background: rgba(255, 200, 0, 0.2);
+        border: 1px solid #ffc800;
+        color: #ffc800;
+      }
+      .nutri-d {
+        background: rgba(255, 120, 0, 0.2);
+        border: 1px solid #ff7800;
+        color: #ff7800;
+      }
+      .nutri-e {
+        background: rgba(255, 50, 50, 0.2);
+        border: 1px solid #ff3232;
+        color: #ff3232;
+      }
+
+      .nutrition-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+      }
+
+      .stat-item {
+        background: rgba(0, 255, 255, 0.04);
+        border: 1px solid rgba(0, 255, 255, 0.15);
+        border-radius: 8px;
+        padding: 12px 16px;
+      }
+
+      .stat-label {
+        font-size: 0.72rem;
+        color: #7ffcff;
+        letter-spacing: 1px;
+        opacity: 0.8;
+        margin-bottom: 4px;
+        text-transform: uppercase;
+      }
+
+      .stat-value {
+        font-size: 1.1rem;
         color: #eaffff;
-        text-shadow: 0 0 8px rgba(0, 255, 255, 0.4);
+        font-weight: bold;
+        text-shadow: 0 0 6px rgba(0, 255, 255, 0.3);
+      }
+
+      .ingredients-block {
+        background: rgba(0, 255, 255, 0.04);
+        border: 1px solid rgba(0, 255, 255, 0.15);
+        border-radius: 8px;
+        padding: 14px 18px;
+      }
+
+      .ingredients-label {
+        font-size: 0.72rem;
+        color: #00ffff;
+        letter-spacing: 1.5px;
+        opacity: 0.8;
+        margin-bottom: 6px;
+        text-transform: uppercase;
+      }
+
+      .ingredients-text {
+        font-size: 0.88rem;
+        color: #eaffff;
+        line-height: 1.7;
+        opacity: 0.9;
+      }
+
+      .result-meta {
+        font-size: 0.72rem;
+        color: #7ffcff;
+        opacity: 0.6;
         text-align: center;
         letter-spacing: 0.5px;
-      }
-
-      .tip-id {
-        font-size: 0.8rem;
-        color: #00ffff;
-        text-shadow: 0 0 6px #00ffff;
-        margin-top: 4px;
-        letter-spacing: 1px;
-        opacity: 0.7;
       }
 
       .loading-text {
@@ -47,6 +226,8 @@
         font-size: 1rem;
         text-shadow: 0 0 6px #00ffff;
         animation: flicker 1.2s infinite alternate;
+        text-align: center;
+        padding: 20px;
       }
 
       @keyframes flicker {
@@ -58,17 +239,25 @@
         }
       }
 
-      .error-text {
-        color: #ff4d4d;
-        font-size: 1rem;
-        text-shadow: 0 0 6px rgba(255, 77, 77, 0.6);
+      .error-box {
+        background: rgba(255, 77, 77, 0.08);
+        border: 1px solid #ff4d4d;
+        border-radius: 10px;
+        padding: 20px;
+        max-width: 660px;
+        margin: 16px auto;
+        display: none;
       }
 
-      .tip-counter {
-        font-size: 0.85rem;
-        color: #7ffcff;
-        margin-top: 4px;
-        opacity: 0.8;
+      .error-box.visible {
+        display: block;
+      }
+
+      .error-box p {
+        color: #ff4d4d;
+        text-shadow: 0 0 6px rgba(255, 77, 77, 0.6);
+        font-size: 1rem;
+        margin: 0;
       }
 
       .btn-row {
@@ -76,7 +265,7 @@
         justify-content: center;
         gap: 14px;
         flex-wrap: wrap;
-        margin-top: 10px;
+        margin-top: 14px;
       }
 
       .save-btn {
@@ -134,8 +323,14 @@
         opacity: 1;
       }
 
-      .view-saved-link {
-        margin-top: 16px;
+      @media (max-width: 500px) {
+        .nutrition-grid {
+          grid-template-columns: 1fr;
+        }
+        .product-header {
+          flex-direction: column;
+          text-align: center;
+        }
       }
     </style>
   </head>
@@ -146,41 +341,104 @@
     <div class="toast" id="toast"></div>
 
     <section class="hero">
-      <h1>Health Tips</h1>
-      <p class="hero-subtext">Daily advice to keep you informed and healthy</p>
+      <h1>Nutrition Checker</h1>
+      <p class="hero-subtext">
+        Know what's in your food — powered by Open Food Facts
+      </p>
 
       <div class="content">
-        <h2>Today's Health Advice</h2>
+        <h2>Search Food Nutrition Info</h2>
         <p>
-          Click the button below to get a random health tip powered by a live
-          API.
+          Enter a food or product name to get its nutrition facts and health
+          score.
         </p>
 
-        <!-- Tip Display Card -->
-        <div class="tip-card" id="tipCard">
-          <p class="tip-text" id="tipText">
-            Press the button to get your first health tip.
-          </p>
+        <!-- Search Input -->
+        <div class="search-row">
+          <input
+            type="text"
+            id="searchInput"
+            placeholder="e.g. apple, milk, bread, rice"
+          />
+          <button id="searchBtn" onclick="fetchNutrition()">Search</button>
         </div>
 
-        <p class="tip-id" id="tipId"></p>
-        <p class="tip-counter" id="tipCounter"></p>
-
-        <!-- Buttons -->
-        <div class="btn-row">
-          <button id="fetchBtn" onclick="fetchTip()">Get Health Tip</button>
-          <button class="save-btn" id="saveBtn" onclick="saveTip()" disabled>
-            Save Tip
+        <!-- Quick suggestion chips -->
+        <div class="suggestions">
+          <button class="suggestion-chip" onclick="quickSearch('apple')">
+            🍎 Apple
+          </button>
+          <button class="suggestion-chip" onclick="quickSearch('milk')">
+            🥛 Milk
+          </button>
+          <button class="suggestion-chip" onclick="quickSearch('bread')">
+            🍞 Bread
+          </button>
+          <button class="suggestion-chip" onclick="quickSearch('rice')">
+            🍚 Rice
+          </button>
+          <button class="suggestion-chip" onclick="quickSearch('egg')">
+            🥚 Egg
+          </button>
+          <button class="suggestion-chip" onclick="quickSearch('banana')">
+            🍌 Banana
           </button>
         </div>
 
-        <!-- Link to saved tips -->
-        <div class="view-saved-link">
-          <a href="saved-tips.html"
-            ><button style="font-size: 14px; padding: 10px 24px">
-              View Saved Tips
-            </button></a
+        <!-- Loading state -->
+        <div id="loadingBox" style="display: none">
+          <p class="loading-text">⟳ Fetching nutrition data...</p>
+        </div>
+
+        <!-- Error Box -->
+        <div class="error-box" id="errorBox">
+          <p id="errorText"></p>
+        </div>
+
+        <!-- Result Card -->
+        <div class="result-card" id="resultCard">
+          <!-- Product header: image + name -->
+          <div class="product-header">
+            <div id="productImgWrap"></div>
+            <div class="product-title">
+              <h3 id="productName"></h3>
+              <p class="product-brand" id="productBrand"></p>
+              <span id="nutriScore"></span>
+            </div>
+          </div>
+
+          <!-- Nutrition Grid -->
+          <div class="nutrition-grid" id="nutritionGrid"></div>
+
+          <!-- Ingredients -->
+          <div
+            class="ingredients-block"
+            id="ingredientsBlock"
+            style="display: none"
           >
+            <p class="ingredients-label">🧪 Ingredients</p>
+            <p class="ingredients-text" id="ingredientsText"></p>
+          </div>
+
+          <p class="result-meta">Source: Open Food Facts — openfoodfacts.org</p>
+        </div>
+
+        <!-- Buttons -->
+        <div class="btn-row">
+          <button
+            class="save-btn"
+            id="saveBtn"
+            onclick="saveEntry()"
+            disabled
+            style="display: none"
+          >
+            Save Food
+          </button>
+          <a href="saved-tips.html">
+            <button style="font-size: 14px; padding: 10px 24px">
+              View Saved Foods
+            </button>
+          </a>
         </div>
       </div>
 
@@ -188,132 +446,273 @@
         class="content"
         style="
           margin-top: 30px;
-          max-width: 600px;
+          max-width: 660px;
           margin-left: auto;
           margin-right: auto;
         "
       >
-        <h2>How It Works</h2>
+        <h2>About This Feature</h2>
         <p>
-          This page connects to the
-          <strong style="color: #00ffff">Advice Slip API</strong>, a free public
-          API that returns random advice slips. Each time you click the button,
-          NEONODE fetches a brand new tip from the API and displays it
-          instantly. You can also save any tip you like and view them later.
+          This page uses the
+          <strong style="color: #00ffff">Open Food Facts API</strong>, a free
+          and open database of food products from around the world. NEONODE uses
+          it to help users understand what they eat — supporting better health
+          decisions every day.
         </p>
       </div>
     </section>
 
     <footer>
-      <p>NEONODE © 2026 — Powered by Advice Slip API</p>
+      <p>NEONODE © 2026 — Powered by Open Food Facts API</p>
     </footer>
 
     <script>
       // ========== STATE ==========
-      let tipCount = 0;
-      let currentTip = null; // stores the currently displayed tip object
+      let currentEntry = null;
 
-      // ========== FETCH TIP ==========
-      async function fetchTip() {
-        const tipText = document.getElementById("tipText");
-        const tipId = document.getElementById("tipId");
-        const tipCounter = document.getElementById("tipCounter");
-        const fetchBtn = document.getElementById("fetchBtn");
+      // ========== QUICK SEARCH ==========
+      function quickSearch(term) {
+        document.getElementById("searchInput").value = term;
+        fetchNutrition();
+      }
+
+      // ========== SAFE GET — returns "N/A" if value missing ==========
+      function safe(value, unit) {
+        if (value === undefined || value === null || value === "") return "N/A";
+        return value + (unit || "");
+      }
+
+      // ========== FETCH NUTRITION DATA ==========
+      async function fetchNutrition() {
+        const input = document.getElementById("searchInput");
+        const query = input.value.trim();
+
+        const searchBtn = document.getElementById("searchBtn");
+        const loadingBox = document.getElementById("loadingBox");
+        const errorBox = document.getElementById("errorBox");
+        const resultCard = document.getElementById("resultCard");
         const saveBtn = document.getElementById("saveBtn");
 
-        // Show loading state
-        tipText.innerHTML =
-          '<span class="loading-text">⟳ Fetching your health tip...</span>';
-        tipId.textContent = "";
-        fetchBtn.disabled = true;
-        fetchBtn.textContent = "Loading...";
-        saveBtn.disabled = true;
-        saveBtn.textContent = "Save Tip";
-        currentTip = null;
+        // Validate input
+        if (query === "") {
+          showError("⚠ Please enter a food name to search.");
+          return;
+        }
+
+        // Reset UI
+        resultCard.classList.remove("visible");
+        errorBox.classList.remove("visible");
+        saveBtn.style.display = "none";
+        currentEntry = null;
+
+        // Show loading
+        loadingBox.style.display = "block";
+        searchBtn.disabled = true;
+        searchBtn.textContent = "Searching...";
 
         try {
-          // Fetch from Advice Slip API
-          const response = await fetch("https://api.adviceslip.com/advice", {
-            cache: "no-store",
-          });
+          // Fetch from Open Food Facts API
+          const response = await fetch(
+            "https://world.openfoodfacts.org/cgi/search.pl?action=process&search_terms=" +
+              encodeURIComponent(query) +
+              "&json=true&page_size=1&fields=product_name,brands,image_small_url,nutriments,nutrition_grades,ingredients_text",
+          );
 
           if (!response.ok) {
-            throw new Error("API request failed. Status: " + response.status);
+            throw new Error(
+              "Could not reach Open Food Facts. Please try again.",
+            );
           }
 
           const data = await response.json();
-          const advice = data.slip.advice;
-          const id = data.slip.id;
 
-          // Store current tip in memory
-          currentTip = { id: id, text: advice };
+          // Check if any product was found
+          if (!data.products || data.products.length === 0) {
+            throw new Error(
+              'No food found for "' + query + '". Try a different term.',
+            );
+          }
 
-          tipCount++;
+          const product = data.products[0];
+          const nutriments = product.nutriments || {};
 
-          // Display the tip
-          tipText.textContent = "💡 " + advice;
-          tipId.textContent = "Tip #" + id + " from Advice Slip API";
-          tipCounter.textContent =
-            "You have fetched " + tipCount + " tip(s) this session.";
+          // Extract product info
+          const name = product.product_name || query;
+          const brand = product.brands || "";
+          const imageUrl = product.image_small_url || null;
+          const nutriGrade = product.nutrition_grades || null;
+          const ingredients = product.ingredients_text || null;
 
-          // Check if already saved — update button label accordingly
-          const saved = getSavedTips();
-          const alreadySaved = saved.some((t) => t.id === id);
+          // Nutrition values per 100g
+          const calories = safe(nutriments["energy-kcal_100g"], " kcal");
+          const fat = safe(nutriments["fat_100g"], "g");
+          const saturatedFat = safe(nutriments["saturated-fat_100g"], "g");
+          const carbs = safe(nutriments["carbohydrates_100g"], "g");
+          const sugars = safe(nutriments["sugars_100g"], "g");
+          const fiber = safe(nutriments["fiber_100g"], "g");
+          const protein = safe(nutriments["proteins_100g"], "g");
+          const salt = safe(nutriments["salt_100g"], "g");
+
+          // Store current entry for saving
+          currentEntry = {
+            name: name,
+            brand: brand,
+            imageUrl: imageUrl,
+            nutriGrade: nutriGrade,
+            calories: calories,
+            fat: fat,
+            saturatedFat: saturatedFat,
+            carbs: carbs,
+            sugars: sugars,
+            fiber: fiber,
+            protein: protein,
+            salt: salt,
+            ingredients: ingredients,
+          };
+
+          // ---- Populate the card ----
+
+          // Product image or placeholder
+          const imgWrap = document.getElementById("productImgWrap");
+          if (imageUrl) {
+            imgWrap.innerHTML = `<img src="${imageUrl}" alt="${name}" class="product-img" />`;
+          } else {
+            imgWrap.innerHTML = `<div class="product-img-placeholder">🍽️</div>`;
+          }
+
+          // Name and brand
+          document.getElementById("productName").textContent = name;
+          document.getElementById("productBrand").textContent = brand
+            ? "by " + brand
+            : "";
+
+          // Nutri-Score badge
+          const nutriScoreEl = document.getElementById("nutriScore");
+          if (nutriGrade) {
+            const grade = nutriGrade.toUpperCase();
+            nutriScoreEl.textContent = "Nutri-Score: " + grade;
+            nutriScoreEl.className =
+              "nutri-score nutri-" + nutriGrade.toLowerCase();
+          } else {
+            nutriScoreEl.textContent = "";
+          }
+
+          // Nutrition grid
+          const grid = document.getElementById("nutritionGrid");
+          grid.innerHTML = `
+            <div class="stat-item">
+              <p class="stat-label">Calories (per 100g)</p>
+              <p class="stat-value">${calories}</p>
+            </div>
+            <div class="stat-item">
+              <p class="stat-label">Protein</p>
+              <p class="stat-value">${protein}</p>
+            </div>
+            <div class="stat-item">
+              <p class="stat-label">Carbohydrates</p>
+              <p class="stat-value">${carbs}</p>
+            </div>
+            <div class="stat-item">
+              <p class="stat-label">Sugars</p>
+              <p class="stat-value">${sugars}</p>
+            </div>
+            <div class="stat-item">
+              <p class="stat-label">Fat</p>
+              <p class="stat-value">${fat}</p>
+            </div>
+            <div class="stat-item">
+              <p class="stat-label">Saturated Fat</p>
+              <p class="stat-value">${saturatedFat}</p>
+            </div>
+            <div class="stat-item">
+              <p class="stat-label">Fiber</p>
+              <p class="stat-value">${fiber}</p>
+            </div>
+            <div class="stat-item">
+              <p class="stat-label">Salt</p>
+              <p class="stat-value">${salt}</p>
+            </div>
+          `;
+
+          // Ingredients
+          const ingredientsBlock = document.getElementById("ingredientsBlock");
+          if (ingredients) {
+            document.getElementById("ingredientsText").textContent =
+              ingredients.length > 400
+                ? ingredients.substring(0, 400) + "..."
+                : ingredients;
+            ingredientsBlock.style.display = "block";
+          } else {
+            ingredientsBlock.style.display = "none";
+          }
+
+          // Show the card
+          resultCard.classList.add("visible");
+
+          // Check if already saved — prevent duplicates
+          const saved = getSaved();
+          const alreadySaved = saved.some(
+            (s) => s.name.toLowerCase() === name.toLowerCase(),
+          );
+
+          saveBtn.style.display = "inline-block";
           if (alreadySaved) {
             saveBtn.textContent = "Already Saved";
             saveBtn.disabled = true;
           } else {
-            saveBtn.textContent = "Save Tip";
+            saveBtn.textContent = "Save Food";
             saveBtn.disabled = false;
           }
         } catch (error) {
-          if (!navigator.onLine) {
-            tipText.innerHTML =
-              '<span class="error-text">⚠ No internet connection. Please check your network and try again.</span>';
-          } else {
-            tipText.innerHTML =
-              '<span class="error-text">⚠ Could not load a tip right now. Please try again in a moment.</span>';
-          }
-          tipId.textContent = "";
-          console.error("API Error:", error);
+          showError("⚠ " + error.message);
+          console.error("Open Food Facts Error:", error);
         } finally {
-          fetchBtn.disabled = false;
-          fetchBtn.textContent = "Get Health Tip";
+          loadingBox.style.display = "none";
+          searchBtn.disabled = false;
+          searchBtn.textContent = "Search";
         }
       }
 
-      // ========== GET SAVED TIPS FROM LOCALSTORAGE ==========
-      function getSavedTips() {
-        // getItem returns null if nothing saved yet, so we default to []
-        return JSON.parse(localStorage.getItem("savedTips")) || [];
+      // ========== SHOW ERROR ==========
+      function showError(message) {
+        const errorBox = document.getElementById("errorBox");
+        document.getElementById("errorText").textContent = message;
+        errorBox.classList.add("visible");
       }
 
-      // ========== SAVE TIP ==========
-      function saveTip() {
-        if (!currentTip) return;
+      // ========== GET SAVED FROM LOCALSTORAGE ==========
+      function getSaved() {
+        return JSON.parse(localStorage.getItem("savedFoods")) || [];
+      }
 
-        const saved = getSavedTips();
+      // ========== SAVE ENTRY ==========
+      function saveEntry() {
+        if (!currentEntry) return;
 
-        // Prevent duplicates — check by tip ID
-        const alreadySaved = saved.some((t) => t.id === currentTip.id);
+        const saved = getSaved();
+
+        // Prevent duplicates — check by product name
+        const alreadySaved = saved.some(
+          (s) => s.name.toLowerCase() === currentEntry.name.toLowerCase(),
+        );
+
         if (alreadySaved) {
-          showToast("⚠ This tip is already saved!", "duplicate");
+          showToast("⚠ This food is already saved!", "duplicate");
           return;
         }
 
-        // Add new tip to the array and save back to localStorage
-        saved.push({ id: currentTip.id, text: currentTip.text });
-        localStorage.setItem("savedTips", JSON.stringify(saved));
+        // Save to localStorage
+        saved.push(currentEntry);
+        localStorage.setItem("savedFoods", JSON.stringify(saved));
 
-        // Update save button state
         const saveBtn = document.getElementById("saveBtn");
         saveBtn.textContent = "Already Saved";
         saveBtn.disabled = true;
 
-        showToast("✔ Tip saved successfully!", "success");
+        showToast("✔ Food saved successfully!", "success");
       }
 
-      // ========== TOAST NOTIFICATION ==========
+      // ========== TOAST ==========
       function showToast(message, type) {
         const toast = document.getElementById("toast");
         toast.textContent = message;
@@ -323,8 +722,12 @@
         }, 2500);
       }
 
-      // Auto-fetch on page load
-      window.addEventListener("load", fetchTip);
+      // Allow pressing Enter to search
+      document
+        .getElementById("searchInput")
+        .addEventListener("keypress", function (e) {
+          if (e.key === "Enter") fetchNutrition();
+        });
     </script>
   </body>
 </html>

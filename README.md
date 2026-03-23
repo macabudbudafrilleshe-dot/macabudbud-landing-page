@@ -163,28 +163,66 @@ Implemented a simple admin interface including:
 
 ---
 
-## API Integration — Health Tips Page
+# NEONODE
 
-Integrated the Advice Slip API into NEONODE to display random health tips.
+## Description
 
-- Page: `health-tips.html`
-- API Used: [Advice Slip API](https://api.adviceslip.com)
-- Features:
-  - Fetches a random health tip on page load
-  - User can click "Get Health Tip" to fetch a new one
-  - Shows tip ID and session fetch counter
-  - Handles errors (no internet, failed request) gracefully
-- How to use: Navigate to the Health Tips page and click the button
+NEONODE is an AI health assistant web application that helps users access reliable health and nutrition information. It features user authentication, a profile system, admin management pages, and a Nutrition Checker powered by a live public API that displays real food nutrition data.
 
 ---
 
-## Add Save Feature (Using localStorage)
+## API Used
 
-Enhanced the Health Tips page with a save feature using localStorage.
+**Open Food Facts API**
 
-- Save button stores the current tip (ID + text) in localStorage
-- Duplicate tips are prevented using tip ID checking
-- Saved Tips page (`saved-tips.html`) displays all saved tips
+- URL: https://world.openfoodfacts.org
+- Provides detailed nutrition information for food products worldwide including calories, protein, carbohydrates, fat, sugar, fiber, salt, ingredients, and Nutri-Score health ratings.
+
+---
+
+## Features
+
+- User login and signup with form validation
+- Profile page displaying user information
+- Settings page for updating account details
+- Admin Dashboard accessible only to admin users
+- Manage Users page with dynamic table and delete functionality
+- Add User form with input validation
+- Nutrition Checker — search any food and get real nutrition facts from the API
+- Displays calories, protein, carbs, fat, sugar, fiber, salt per 100g
+- Shows Nutri-Score health rating (A to E) and product image
+- Save food nutrition data using localStorage
+- Saved Foods page displaying all saved entries
+- Delete individual saved entries
+- Duplicate prevention when saving food items
 - Data persists after page refresh
-- Delete button removes individual saved tips
-- Toast notifications confirm save and delete actions
+
+---
+
+## How to Use
+
+1. Open the live site
+2. Click **Login** and sign in with any email and password (6+ characters)
+3. To access admin pages, log in with `admin@neonode.com`
+4. From the landing page, click **Get Health Tips** to open the Nutrition Checker
+5. Type a food name (e.g. apple, milk, bread) or click a suggestion chip
+6. View the nutrition facts and Nutri-Score for that food
+7. Click **Save Food** to save the entry to your list
+8. Click **View Saved Foods** to see all saved entries
+9. Refresh the page — your saved data will still be there
+
+---
+
+## Challenges Encountered
+
+- Finding a free public API that requires no API key and works on GitHub Pages without breaking on deployment
+- Handling missing or undefined nutrition fields from the API response gracefully so the page never breaks
+- Preventing duplicate entries in localStorage using product name comparison
+- Keeping the UI consistent with the existing NEONODE neon cyberpunk design across all new pages
+
+---
+
+## Screenshot
+
+> Add a screenshot of your working Nutrition Checker page here.
+> Example: ![Nutrition Checker](assets/screenshot.png)

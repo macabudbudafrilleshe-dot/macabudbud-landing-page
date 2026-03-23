@@ -3,35 +3,152 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Saved Tips - NEONODE</title>
+    <title>Saved Foods - NEONODE</title>
     <link rel="stylesheet" href="style.css" />
     <style>
       .saved-card {
         background: rgba(0, 0, 0, 0.6);
         border: 1px solid #00ffff;
         border-radius: 12px;
-        padding: 20px 30px;
-        max-width: 600px;
-        margin: 12px auto;
+        padding: 24px 30px;
+        max-width: 660px;
+        margin: 14px auto;
         box-shadow: 0 0 14px rgba(0, 255, 255, 0.2);
         display: flex;
         flex-direction: column;
-        gap: 10px;
+        gap: 12px;
         text-align: left;
       }
 
-      .saved-card .saved-text {
-        font-size: 1.1rem;
-        color: #eaffff;
-        text-shadow: 0 0 6px rgba(0, 255, 255, 0.3);
-        line-height: 1.6;
+      .product-header {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        flex-wrap: wrap;
+        justify-content: center;
       }
 
-      .saved-card .saved-meta {
-        font-size: 0.78rem;
+      .product-img {
+        width: 80px;
+        height: 80px;
+        object-fit: contain;
+        border-radius: 8px;
+        border: 1px solid rgba(0, 255, 255, 0.3);
+        background: rgba(255, 255, 255, 0.05);
+      }
+
+      .product-img-placeholder {
+        width: 80px;
+        height: 80px;
+        border-radius: 8px;
+        border: 1px solid rgba(0, 255, 255, 0.3);
+        background: rgba(0, 255, 255, 0.05);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.8rem;
+      }
+
+      .product-title h3 {
         color: #00ffff;
-        opacity: 0.7;
+        font-size: 1.1rem;
+        text-shadow: 0 0 8px rgba(0, 255, 255, 0.6);
+        margin: 0 0 4px 0;
+        text-transform: uppercase;
         letter-spacing: 1px;
+      }
+
+      .product-brand {
+        font-size: 0.82rem;
+        color: #7ffcff;
+        opacity: 0.8;
+      }
+
+      .nutri-score {
+        display: inline-block;
+        padding: 3px 12px;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: bold;
+        letter-spacing: 1px;
+        margin-top: 4px;
+      }
+
+      .nutri-a {
+        background: rgba(0, 200, 80, 0.2);
+        border: 1px solid #00c850;
+        color: #00c850;
+      }
+      .nutri-b {
+        background: rgba(100, 200, 0, 0.2);
+        border: 1px solid #64c800;
+        color: #64c800;
+      }
+      .nutri-c {
+        background: rgba(255, 200, 0, 0.2);
+        border: 1px solid #ffc800;
+        color: #ffc800;
+      }
+      .nutri-d {
+        background: rgba(255, 120, 0, 0.2);
+        border: 1px solid #ff7800;
+        color: #ff7800;
+      }
+      .nutri-e {
+        background: rgba(255, 50, 50, 0.2);
+        border: 1px solid #ff3232;
+        color: #ff3232;
+      }
+
+      .nutrition-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+      }
+
+      .stat-item {
+        background: rgba(0, 255, 255, 0.04);
+        border: 1px solid rgba(0, 255, 255, 0.15);
+        border-radius: 8px;
+        padding: 10px 14px;
+      }
+
+      .stat-label {
+        font-size: 0.7rem;
+        color: #7ffcff;
+        letter-spacing: 1px;
+        opacity: 0.8;
+        margin-bottom: 3px;
+        text-transform: uppercase;
+      }
+
+      .stat-value {
+        font-size: 1rem;
+        color: #eaffff;
+        font-weight: bold;
+      }
+
+      .ingredients-block {
+        background: rgba(0, 255, 255, 0.04);
+        border: 1px solid rgba(0, 255, 255, 0.15);
+        border-radius: 8px;
+        padding: 12px 16px;
+      }
+
+      .ingredients-label {
+        font-size: 0.7rem;
+        color: #00ffff;
+        letter-spacing: 1.5px;
+        opacity: 0.8;
+        margin-bottom: 6px;
+        text-transform: uppercase;
+      }
+
+      .ingredients-text {
+        font-size: 0.85rem;
+        color: #eaffff;
+        line-height: 1.6;
+        opacity: 0.9;
       }
 
       .delete-saved-btn {
@@ -65,6 +182,14 @@
         margin-top: 20px;
       }
 
+      .saved-count {
+        font-size: 0.9rem;
+        color: #7ffcff;
+        opacity: 0.8;
+        margin-bottom: 10px;
+        text-align: center;
+      }
+
       .toast {
         position: fixed;
         bottom: 30px;
@@ -93,96 +218,120 @@
         opacity: 1;
       }
 
-      .saved-count {
-        font-size: 0.9rem;
-        color: #7ffcff;
-        opacity: 0.8;
-        margin-bottom: 10px;
+      @media (max-width: 500px) {
+        .nutrition-grid {
+          grid-template-columns: 1fr;
+        }
+        .product-header {
+          flex-direction: column;
+          text-align: center;
+        }
       }
     </style>
   </head>
   <body>
     <a href="health-tips.html" class="login-box">Back</a>
 
-    <!-- Toast notification -->
     <div class="toast" id="toast"></div>
 
     <section class="hero">
-      <h1>Saved Tips</h1>
-      <p class="hero-subtext">Your personally saved health advice</p>
+      <h1>Saved Foods</h1>
+      <p class="hero-subtext">Your saved food nutrition data</p>
 
       <div class="content">
-        <h2>My Saved Health Tips</h2>
-
+        <h2>My Saved Foods</h2>
         <p class="saved-count" id="savedCount"></p>
-
-        <!-- Saved tips will be rendered here -->
         <div id="savedList"></div>
 
         <div class="btn-row">
-          <a href="health-tips.html"><button>Get More Tips</button></a>
+          <a href="health-tips.html"><button>Search More Foods</button></a>
         </div>
       </div>
     </section>
 
     <footer>
-      <p>NEONODE © 2026 — Powered by Advice Slip API</p>
+      <p>NEONODE © 2026 — Powered by Open Food Facts API</p>
     </footer>
 
     <script>
-      // ========== GET SAVED TIPS FROM LOCALSTORAGE ==========
-      function getSavedTips() {
-        return JSON.parse(localStorage.getItem("savedTips")) || [];
+      function getSaved() {
+        return JSON.parse(localStorage.getItem("savedFoods")) || [];
       }
 
-      // ========== DELETE A SAVED TIP ==========
-      function deleteTip(id) {
-        let saved = getSavedTips();
-
-        // Remove the tip with the matching ID
-        saved = saved.filter((t) => t.id !== id);
-
-        // Save the updated array back to localStorage
-        localStorage.setItem("savedTips", JSON.stringify(saved));
-
-        showToast("🗑 Tip removed.", "deleted");
-
-        // Re-render the list
+      function deleteEntry(name) {
+        let saved = getSaved();
+        saved = saved.filter(
+          (s) => s.name.toLowerCase() !== name.toLowerCase(),
+        );
+        localStorage.setItem("savedFoods", JSON.stringify(saved));
+        showToast("🗑 " + name + " removed.", "deleted");
         renderSaved();
       }
 
-      // ========== RENDER SAVED TIPS ==========
       function renderSaved() {
-        const saved = getSavedTips();
+        const saved = getSaved();
         const list = document.getElementById("savedList");
         const countEl = document.getElementById("savedCount");
 
         list.innerHTML = "";
 
         if (saved.length === 0) {
-          // Empty state — never leave page blank
           list.innerHTML =
-            '<p class="empty-state">💭 No saved tips yet. Go get some health tips and save them!</p>';
+            '<p class="empty-state">💭 No saved foods yet. Search for a food and save it!</p>';
           countEl.textContent = "";
           return;
         }
 
-        countEl.textContent = "You have " + saved.length + " saved tip(s).";
+        countEl.textContent = "You have " + saved.length + " saved food(s).";
 
-        // Loop through saved tips and create a card for each
-        saved.forEach((tip) => {
+        saved.forEach((entry) => {
           const card = document.createElement("div");
           card.className = "saved-card";
+
+          // Image or placeholder
+          const imgHTML = entry.imageUrl
+            ? `<img src="${entry.imageUrl}" alt="${entry.name}" class="product-img" />`
+            : `<div class="product-img-placeholder">🍽️</div>`;
+
+          // Nutri-score badge
+          const nutriHTML = entry.nutriGrade
+            ? `<span class="nutri-score nutri-${entry.nutriGrade.toLowerCase()}">Nutri-Score: ${entry.nutriGrade.toUpperCase()}</span>`
+            : "";
+
+          // Ingredients block
+          const ingredientsHTML = entry.ingredients
+            ? `<div class="ingredients-block">
+                <p class="ingredients-label">🧪 Ingredients</p>
+                <p class="ingredients-text">${entry.ingredients}</p>
+               </div>`
+            : "";
+
           card.innerHTML = `
-            <p class="saved-text">💡 ${tip.text}</p>
-            <p class="saved-meta">Tip #${tip.id}</p>
-            <button class="delete-saved-btn" onclick="deleteTip(${tip.id})">Delete</button>
+            <div class="product-header">
+              ${imgHTML}
+              <div class="product-title">
+                <h3>${entry.name}</h3>
+                <p class="product-brand">${entry.brand ? "by " + entry.brand : ""}</p>
+                ${nutriHTML}
+              </div>
+            </div>
+            <div class="nutrition-grid">
+              <div class="stat-item"><p class="stat-label">Calories (per 100g)</p><p class="stat-value">${entry.calories}</p></div>
+              <div class="stat-item"><p class="stat-label">Protein</p><p class="stat-value">${entry.protein}</p></div>
+              <div class="stat-item"><p class="stat-label">Carbohydrates</p><p class="stat-value">${entry.carbs}</p></div>
+              <div class="stat-item"><p class="stat-label">Sugars</p><p class="stat-value">${entry.sugars}</p></div>
+              <div class="stat-item"><p class="stat-label">Fat</p><p class="stat-value">${entry.fat}</p></div>
+              <div class="stat-item"><p class="stat-label">Saturated Fat</p><p class="stat-value">${entry.saturatedFat}</p></div>
+              <div class="stat-item"><p class="stat-label">Fiber</p><p class="stat-value">${entry.fiber}</p></div>
+              <div class="stat-item"><p class="stat-label">Salt</p><p class="stat-value">${entry.salt}</p></div>
+            </div>
+            ${ingredientsHTML}
+            <button class="delete-saved-btn" onclick="deleteEntry('${entry.name.replace(/'/g, "\\'")}')">Delete</button>
           `;
           list.appendChild(card);
         });
       }
 
-      // ========== TOAST NOTIFICATION ==========
       function showToast(message, type) {
         const toast = document.getElementById("toast");
         toast.textContent = message;
@@ -192,7 +341,6 @@
         }, 2500);
       }
 
-      // Render on page load
       window.addEventListener("load", renderSaved);
     </script>
   </body>
